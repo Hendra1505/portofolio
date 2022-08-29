@@ -1,64 +1,36 @@
 <template>
   <div class="hero">
-    <!-- <img class="background" src="@/assets/img/background.svg" />  Shadows version -->
     <div></div>
     <div class="hero__container">
       <div class="hero__main">
-        <h5 class="hero__title">Tomasz Swierad</h5>
-        <h3 class="hero__sub-title">Junior Front-End Developer</h3>
-        <a
-          class="hero__btn"
-          href="mailto:endurophine@gmail.com"
-          subject="subject text"
-          target="__blank"
-          title="Tomasz Świerad e-mail"
-          >Message Me</a
-        >
+        <h5 class="hero__title">Hendra Ekky Saputra</h5>
+        <h3 class="hero__sub-title">Junior Software Programmer</h3>
+        <a class="hero__btn" href="mailto:hendraekky1946@gmail.com" subject="subject text" target="__blank"
+          title="Hendra Ekky Saputra">Message Me</a>
       </div>
       <div class="hero__footer">
         <li class="hero__links">
           <ul>
-            <a
-              class="hero__link"
-              href="https://drive.google.com/file/d/1JMHQ70LbFCwserHUpR5q7XoI68ul7MFv/view"
-              target="__blank"
-              title="Tomasz Świerad Resume"
-              >Resume</a
-            >
+            <a class="hero__link"
+              href="https://drive.google.com/file/d/1iUdpOA1U3uwQdneCpnYlbPKyXxEse4qw/view?usp=sharing" target="__blank"
+              title="Hendra Ekky Saputra Resume">Portofolio Design</a>
           </ul>
           <ul>
-            <a
-              class="hero__link"
-              href="https://github.com/TomSWD"
-              target="__blank"
-              title="Tomasz Świerad GitHub"
-              >Github</a
-            >
+            <a class="hero__link" href="https://github.com/Hendra1505" target="__blank"
+              title="Hendra Ekky Saputra GitHub">Github</a>
           </ul>
           <ul>
-            <a
-              class="hero__link"
-              href="https://www.linkedin.com/in/tomasz-swierad/"
-              target="__blank"
-              title="Tomasz Świerad LinkedIn"
-              >LinkedIn</a
-            >
-          </ul>
-          <ul>
-            <a
-              class="hero__link"
-              href="https://calendly.com/tomswd"
-              target="__blank"
-              title="Tomasz Świerad Schedule a call"
-              >Schedule a call</a
-            >
+            <a class="hero__link" href="https://www.linkedin.com/in/hendra-ekky-saputra-5a1aa9193/" target="__blank"
+              title="Hendra Ekky Saputra LinkedIn">LinkedIn</a>
           </ul>
         </li>
-        <div class="hero__copyright">© 2021 Tomasz Świerad</div>
+        <div class="hero__copyright">© 2022 Hendra Ekky Saputra</div>
       </div>
     </div>
   </div>
 </template>
+
+
 
 <script>
 export default {
@@ -67,6 +39,8 @@ export default {
 };
 </script>
 
+
+
 <style scoped>
 .background {
   position: absolute;
@@ -74,6 +48,7 @@ export default {
   height: 100%;
   object-fit: cover;
 }
+
 .hero__container {
   display: flex;
   justify-content: space-between;
@@ -84,6 +59,7 @@ export default {
   margin: 0px auto;
   padding: 0px 20px 0px 20px;
 }
+
 .hero__main {
   max-width: 678px;
   width: 100%;
@@ -94,33 +70,38 @@ export default {
   text-align: center;
   align-items: center;
 }
+
 .hero__title {
   font-size: 72px;
-  font-weight: 700;
+  font-weight: 730;
   line-height: 91px;
 }
+
 .hero__sub-title {
   font-size: 36px;
   font-weight: 400;
   line-height: 45px;
   padding-top: 10px;
 }
+
 .hero__btn {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 120px;
   height: 40px;
-  background-color: #ff8e00;
+  background-color: tomato;
   border-radius: 8px;
   color: #fff;
   font-size: 14px;
   margin: 48px auto 0px;
 }
+
 .hero__btn:hover {
   opacity: 0.8;
   transition: 0.5s;
 }
+
 .hero__footer {
   display: flex;
   flex-direction: column;
@@ -129,61 +110,74 @@ export default {
   max-height: 200px;
   height: 100%;
 }
+
 .hero__links {
   display: flex;
   margin: auto;
-  max-width: 536px;
+  max-width: 330px;
   width: 100%;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   font-weight: 400;
 }
+
 .hero__link:hover {
   transition: 0s;
   font-weight: 700;
 }
+
 .hero__copyright {
   font-size: 10px;
   margin: auto;
   margin: 0 auto;
 }
+
 @media (max-width: 707px) {
   .hero__main {
     padding-top: 50px;
   }
 }
+
 @media (max-width: 555px) {
   .hero__main {
     padding-top: 40px;
   }
+
   .hero__title {
     line-height: 70px;
   }
+
   .hero__title {
     font-size: 65px;
     line-height: 60px;
   }
+
   .hero__sub-title {
     font-size: 26px;
   }
+
   .hero__btn {
     margin: 40px auto 70px;
   }
 }
+
 @media (max-width: 480px) {
   .hero__title {
     font-size: 45px;
     line-height: 40px;
   }
+
   .hero__btn {
     margin-bottom: 40px;
   }
+
   .hero__links {
     flex-direction: column;
     align-items: center;
     gap: 15px;
   }
+
   .hero__copyright {
     font-size: 8px;
     margin-top: 25px;
