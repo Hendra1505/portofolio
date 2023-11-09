@@ -64,13 +64,13 @@ const EmailSection = () => {
           </Link>
         </div>
       </div>
-      {/* <div>
+      <div>
         {emailSubmitted ? (
           <p className="text-green-500 text-sm mt-2">
             Email sent successfully!
           </p>
         ) : (
-          <form className="flex flex-col" onSubmit={handleSubmit}>
+          <form className="flex flex-col" >
             <div className="mb-6">
               <label
                 htmlFor="email"
@@ -125,7 +125,7 @@ const EmailSection = () => {
             </button>
           </form>
         )}
-      </div> */}
+      </div>
     </section>
   );
 };
