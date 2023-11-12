@@ -62,7 +62,7 @@ const AboutSection = () => {
             membuat atau merancang sebuah Software atau Perangkat lunak
             yang Interaktif dan Responsif. Saya juga memiliki berbagai 
             pengalaman bekerja dengan Tech stack seperti Linux, Python,
-            Js, Node.js, PHP, React, React Native Dan SQL. Lalu saya juga memiliki
+            Js, Node.js, Dan sebagainya. Lalu saya juga memiliki
             sebuah pemahaman yaitu untuk selalu belajar meningkatkan baik Hard skill maupun Soft skill saya   
           </p>
           <div className="flex flex-row justify-start mt-8">
