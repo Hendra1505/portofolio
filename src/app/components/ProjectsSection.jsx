@@ -5,24 +5,24 @@ import ProjectTag from "./ProjectTag";
 import { motion, useInView } from "framer-motion";
 
 const projectsData = [
-  // {
-  //   id: 1,
-  //   title: "React Portfolio Website",
-  //   description: "Project 1 description",
-  //   image: "/images/projects/1.png",
-  //   tag: ["All", "Web"],
-  //   gitUrl: "/",
-  //   previewUrl: "/",
-  // },
-  // {
-  //   id: 2,
-  //   title: "Potography Portfolio Website",
-  //   description: "Project 2 description",
-  //   image: "/images/projects/2.png",
-  //   tag: ["All", "Web"],
-  //   gitUrl: "/",
-  //   previewUrl: "/",
-  // },
+  {
+    id: 1,
+    title: "Object Detector",
+    description: "Deteksi setiap object dengan Python Streamlit",
+    image: "/images/projects/object-detector.png",
+    tag: ["All", "Python"],
+    gitUrl: "https://github.com/Hendra1505/object-detector/tree/main",
+    previewUrl: "https://hes-object-detector.streamlit.app/",
+  },
+  {
+    id: 2,
+    title: "Job application",
+    description: "Aplikasi berbasis mobile untuk para pencari kerja dan fitur lainnya",
+    image: "/images/projects/hris-mobileapp.png",
+    tag: ["All", "Mobile Apps"],
+    gitUrl: "/",
+    previewUrl: "/",
+  },
   // {
   //   id: 3,
   //   title: "E-commerce Application",
