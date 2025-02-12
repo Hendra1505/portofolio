@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { fetchPost } from "@/db/queries/posts";
 import Link from "next/link";
-import PostDelete from "@/components/PostDelete";
+import PostDelete from "@/components/post-delete";
 
 export default async function Home() {
   const posts = await fetchPost()
