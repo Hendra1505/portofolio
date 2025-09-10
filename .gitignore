@@ -3,6 +3,8 @@
 /backend/.env
 /backend/*pyc
 /backend/__pycache__/*
+*.swp
+*.pyc
 
 /client/node_modules
 /client/.env
