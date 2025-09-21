@@ -49,8 +49,8 @@ def create_product(product: schemas.ProductBase):
         # penggunaan %s untuk placeholder demi keamanan (ngehindari SQL Injection)
         query = """
             INSERT INTO products (name, price, description, sku, quantity_stock, weight, length, width, brand_id, category_id)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,)
-            RETURNING id;
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id ASC;
             """
         cursor.execute(query, (
             product.name,
@@ -76,6 +76,6 @@ def create_product(product: schemas.ProductBase):
 
     except Exception as e:
         conn.rollback() # Batalkan perubahan jika ada error
-        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     finally:
         release_db_connection(conn)
