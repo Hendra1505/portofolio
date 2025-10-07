@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-from .. import schemas # import schemas pydantic yang kita buat
+from app import schemas # import schemas pydantic yang kita buat
 from ..database import get_db_connection, release_db_connection
 from typing import List
 
