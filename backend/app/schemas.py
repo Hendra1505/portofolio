@@ -2,7 +2,7 @@
 # Jadi, schemas memastikan integritas data yang berpindah antara front-end dan backend.
 
 # Kita akan mendefinisikan "bentuk" data yang kita harapkan untuk masuk atau keluar dari API, tujuan nya untuk validasi bukan interaksi ke database
-from pydantic import BaseModel, EmailStr, HttpUrl, SecretStr
+from pydantic import BaseModel, EmailStr, HttpUrl, SecretStr, Field
 from typing import List, Optional
 from datetime import datetime
 
@@ -38,17 +38,21 @@ class CustomerBase(BaseModel):
     username: str
     phone_number: str
     email: EmailStr
+    gender: Optional[str] = None
     religion: Optional[str] = None
     profile_picture: Optional[HttpUrl] = None
 
 class CustomerCreate(CustomerBase):
-    hash_password: SecretStr
+    password: SecretStr = Field(
+        ...,
+        min_length=8, # minimal 8 karakter
+        max_length=72 # maksimal 72 karakter
+    )
     # Tipe Data: SecretStr. Ini adalah tipe khusus dari Pydantic yang akan menyembunyikan 
     # nilai password di log atau pesan error, mencegah kebocoran yang tidak disengaja.
 
 class Customer(CustomerBase):
     id: int
-    gender: Optional[str] = None
     created_at: datetime
 
     class Config:
