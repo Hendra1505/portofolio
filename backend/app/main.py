@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import product_router
+from .routers import product_router, customer_router
 
 app = FastAPI(
     title="Rest API untuk E-commerce UMKM",
@@ -7,9 +7,10 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# Daftarkan router produk ke aplikasi utama
+# Daftarkan router produk
 app.include_router(product_router.router)
-
+# Daftarkan juga router customer (INI BAGIAN YANG KEMUNGKINAN HILANG)
+app.include_router(customer_router.router)
 
 @app.get("/")
 def read_root():
