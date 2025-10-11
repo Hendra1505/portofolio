@@ -77,9 +77,9 @@ def create_new_customer(customer: schemas.CustomerCreate):
         cursor.execute(query_select, (new_customer_id,))
         new_customer = cursor.fetchone()
 
-        # TAMBAHKAN BARIS INI UNTUK DEBUGGING
-        print("Tipe data new_customer:", type(new_customer)) 
-        print("Isi variabel new_customer:", new_customer)
+        # DEBUGGING
+        # print("Tipe data new_customer:", type(new_customer)) 
+        # print("Isi variabel new_customer:", new_customer)
 
         cursor.close()
         return dict(new_customer)
@@ -89,6 +89,50 @@ def create_new_customer(customer: schemas.CustomerCreate):
         # cek errror untuk duplikasi email / username
         if "unique constraint" in str(e).lower():
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email or Username already exists.")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    finally:
+        release_db_connection(conn)
+
+
+# ==== Addresses ====
+# @router.get("/{customers_id}/addresses", response_model=schemas.Addresses)
+
+@router.post("/{customers_id}/addresses", response_model=schemas.Addresses, status_code=status.HTTP_201_CREATED)
+def create_customer_address(customer_id: int, address: schemas.AddressesCreate):
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(cursor_factory=DictCursor)
+
+        query_insert = """
+            INSERT INTO addresses(customer_id, address_line1, region, state_province, city, district, sub_district, address, zip_code, is_default)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id;
+            """
+        cursor.execute(quert_insert, (
+            customer_id,
+            address.address_line1,
+            address.region,
+            address.state_province,
+            address.city,
+            address.district,
+            address.sub_district,
+            address.address,
+            address.zip_code,
+            address.is_default
+        ))
+
+        new_address_id = cursor.fetchone()['id']
+        conn.commit()
+
+        query_select = "SELECT * FROM addresses WHERE id = %s;"
+        cursor.execute(query_select, (new_address_id,))
+        new_address = cursor.fetchone()
+
+        cursor.close()
+        return new_address
+
+    except Exception as e:
+        conn.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     finally:
         release_db_connection(conn)
