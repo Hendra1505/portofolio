@@ -72,6 +72,9 @@ class AddressesBase(BaseModel):
     zip_code: int
     is_default: Optional[bool] = False
 
+class AddressesCreate(AddressesBase):
+    pass
+
 class Addresses(AddressesBase):
     id: int
     customer_id: int
