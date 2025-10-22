@@ -70,7 +70,7 @@ class AddressesBase(BaseModel):
     sub_district: str
     address: str
     zip_code: int
-    is_default: Optional[bool] = False
+    is_default: bool = False
 
 class AddressesCreate(AddressesBase):
     pass
@@ -87,6 +87,9 @@ class Addresses(AddressesBase):
 # === Start brands ===
 class BrandsBase(BaseModel):
     name: str
+
+class BrandCreate(BrandsBase):
+    pass
 
 class Brands(BrandsBase):
     id: int
