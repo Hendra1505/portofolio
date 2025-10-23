@@ -25,10 +25,10 @@ def get_all_brands():
     except Exception as e:
         if isinstance(e, HTTPException):
             raise e
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error accured: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occured: {str(e)}")
     finally:
         release_db_connection(conn)
-        
+
 
 @router.post("/", response_model=schemas.Brands, status_code=status.HTTP_201_CREATED, summary="Create an Brand")
 def create_new_brand(brand: schemas.BrandCreate):
