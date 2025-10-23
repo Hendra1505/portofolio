@@ -103,6 +103,9 @@ class Brands(BrandsBase):
 class CategoriesBase(BaseModel):
     name: str
 
+class CategoriesCreate(CategoriesBase):
+    pass
+
 class Categories(CategoriesBase):
     id: int
 
