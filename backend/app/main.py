@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import product_router, customer_router, brand_router
+from .routers import product_router, customer_router, brand_router, categories_router
 
 app = FastAPI(
     title="Rest API untuk E-commerce UMKM",
@@ -14,6 +14,7 @@ app.include_router(customer_router.router)
 # Register router brands
 app.include_router(brand_router.router)
 # Register router categories
+app.include_router(categories_router.router)
 
 @app.get("/")
 def read_root():
