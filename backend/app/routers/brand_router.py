@@ -68,7 +68,7 @@ def create_new_brand(brand: schemas.BrandCreate):
 def update_record_value_brands(id:int, brand: schemas.BrandCreate):
     conn = get_db_connection()
     try:
-        cursor = conn.cursor(cursor_factor=DictCursor)
+        cursor = conn.cursor(cursor_factory=DictCursor)
 
         if not brand:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Brand with id: {id} not found.")
@@ -94,13 +94,14 @@ def update_record_value_brands(id:int, brand: schemas.BrandCreate):
 
         cursor.close()
         return dict(updated_brand_row)
+
     except Exception as e:
         conn.rollback()
         if isinstance(e, HTTPException):
             raise e
         if "violates foreign key constraint" in str(e):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Brand with id: {id} not found.")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error accured: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error accured: {str(e)}")
     finally:
         release_db_connection(conn)
 
@@ -110,12 +111,12 @@ def delete_brand(id: int):
     conn = get_db_connection()
 
     try:
-        cursor = conn.cursor(cursory_factory=DictCursor)
+        cursor = conn.cursor(cursor_factory=DictCursor)
 
         query_delete = "DELETE FROM brands WHERE id = %s RETURNING id;"
         cursor.execute(query_delete, (id,))
 
-        deleted_brand = cursof.fetchone()
+        deleted_brand = cursor.fetchone()
 
         if not deleted_brand:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Brand with id: {id} not found.")
@@ -131,7 +132,7 @@ def delete_brand(id: int):
         if "foreign key constraint" in str(e).lower():
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Brand with id: {id} cannot deleted because is still in use by products.")
         
-        if ininstance(e, HTTPException) and e.status_code == 404:
+        if isinstance(e, HTTPException) and e.status_code == 404:
             raise e
         
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occured {str(e)}")
