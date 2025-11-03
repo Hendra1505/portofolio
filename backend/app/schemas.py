@@ -102,6 +102,7 @@ class Brands(BrandsBase):
 # === Start categories ===
 class CategoriesBase(BaseModel):
     name: str
+    description: str
 
 class CategoriesCreate(CategoriesBase):
     pass
