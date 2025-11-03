@@ -14,7 +14,7 @@ router = APIRouter(
 
 
 
-@router.get("/", response_model=List[schemas.Customer])
+@router.get("/", response_model=List[schemas.Customer], summary="Getting all customer datas")
 def get_all_customers():
     conn = get_db_connection()
     try:
@@ -44,7 +44,7 @@ def get_all_customers():
         release_db_connection(conn)
 
 
-@router.post("/", response_model=schemas.Customer, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=schemas.Customer, status_code=status.HTTP_201_CREATED, summary="Create an Customer")
 def create_new_customer(customer: schemas.CustomerCreate):
     hashed_password = utils.hash_password(customer.password.get_secret_value())
 
@@ -95,20 +95,61 @@ def create_new_customer(customer: schemas.CustomerCreate):
 
 
 # ==== Addresses ====
-# @router.get("/{customers_id}/addresses", response_model=schemas.Addresses)
+@router.get("/{customer_id}/addresses", response_model=List[schemas.Addresses], summary="Getting an address for a specific customer")
+def get_all_customer_addresses(customer_id: int):
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(cursor_factory=DictCursor)
 
-@router.post("/{customers_id}/addresses", response_model=schemas.Addresses, status_code=status.HTTP_201_CREATED)
+        # First, check if the customer exists to provide a clear 404 error
+        cursor.execute("SELECT id FROM customers WHERE id = %s;", (customer_id,))
+        if not cursor.fetchone():
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"Customer with id: {customer_id} not found.")
+
+        # Fetch all addresses for the given customer_id
+        query = "SELECT * FROM addresses WHERE customer_id = %s ORDER BY is_default DESC, id ASC;"
+        cursor.execute(query, (customer_id,))
+        addresses = cursor.fetchall()
+
+        cursor.close()
+        return [dict(address) for address in addresses]
+    except Exception as e:
+        # Re-raise HTTPException to avoid masking it as a 500 error
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred: {str(e)}")
+    finally:
+        release_db_connection(conn)
+
+
+
+@router.post("/{customer_id}/addresses", response_model=schemas.Addresses, status_code=status.HTTP_201_CREATED, summary="Create an address for a specific customer")
 def create_customer_address(customer_id: int, address: schemas.AddressesCreate):
     conn = get_db_connection()
     try:
         cursor = conn.cursor(cursor_factory=DictCursor)
+
+        cursor.execute("SELECT id FROM customers WHERE id = %s;", (customer_id,))
+        customer = cursor.fetchone()
+
+        if not customer:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Customer with id: {customer_id} not found.")
+        
+        if address.is_default:
+            query_update = """
+                UPDATE addresses 
+                SET is_default = FALSE 
+                WHERE customer_id = %s AND is_default = TRUE;
+            """
+            cursor.execute(query_update, (customer_id,))
 
         query_insert = """
             INSERT INTO addresses(customer_id, address_line1, region, state_province, city, district, sub_district, address, zip_code, is_default)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id;
             """
-        cursor.execute(quert_insert, (
+        cursor.execute(query_insert, (
             customer_id,
             address.address_line1,
             address.region,
@@ -129,10 +170,14 @@ def create_customer_address(customer_id: int, address: schemas.AddressesCreate):
         new_address = cursor.fetchone()
 
         cursor.close()
-        return new_address
+        return dict(new_address)
 
     except Exception as e:
         conn.rollback()
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        if isinstance(e, HTTPException):
+            raise e
+        if "violates foreign key constraint" in str(e):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Customer with id: {customer_id} not found.")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred: {str(e)}")
     finally:
         release_db_connection(conn)
