@@ -93,6 +93,92 @@ def create_new_customer(customer: schemas.CustomerCreate):
     finally:
         release_db_connection(conn)
 
+@router.patch("/{customer_id}", response_model=schemas.Customer, status_code=status.HTTP_200_OK, summary="Edit Customer data Partial")
+def partially_update_record_customer(customer_id: int, customer_data: schemas.CustomerUpdate):
+    conn = get_db_connection()
+
+    try:
+        cursor = conn.cursor(cursor_factory=DictCursor)
+        
+        # 1. Ambil data yang dikirim oleh klien (tidak termasuk field yang 'None')
+        # exclude_unset=True berarti Pydantic hanya mengambil field yang benar-benar dikirim di JSON    
+        update_data = customer_data.model_dump(exclude_unset=True)
+
+        if not update_data:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="There is No Field provided for Update.")
+
+        # Query untuk update secara Partial dan Dinamis
+        # 'set_clause' akan menjadi "first_name = %s", "last_name = %s"
+        set_clause = ", ".join([f"{key} = %s" for key in update_data.keys()])
+
+        # nah value disini field yang di set_clause itu akan menjadi record yang di edit 
+        values = list(update_data.values())
+
+        # tambahkan id di akhir list 'values' untuk 'WHERE' clause
+        values.append(customer_id) 
+
+        query_update = f"""
+        UPDATE customers
+        SET {set_clause}
+        WHERE id = %s
+        RETURNING *;
+        """
+
+        cursor.execute(query_update, tuple(values))
+        updated_customer = cursor.fetchone()
+
+        if not updated_customer:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Customer with id: {id} not found")
+
+        conn.commit()
+        cursor.close()
+
+        return dict(updated_customer)
+
+    except Exception as e:
+        conn.rollback()
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                            detail=f"An unexpected error occurred: {str(e)}")
+    finally:
+        if conn:
+            release_db_connection(conn)
+
+
+@router.delete("/{customer_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Deleting customer record")
+def delete_customer(customer_id: int):
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(cursor_factory=DictCursor)
+
+        query_delete = "DELETE FROM customers WHERE id = %s RETURNING id;"
+        cursor.execute(query_delete, (customer_id,))
+
+        deleted_customer = cursor.fetchone()
+
+        if not deleted_customer:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Customer with id: {customer_id} not found.")
+
+        conn.commit()
+
+        cursor.close()
+
+        return None
+    except Exception as e:
+        conn.rollback()
+
+        if "foreign key constraint" in str(e).lower():
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Customer with id: {customer_id} cannot be deleted because it is still in use in related module.")
+
+        if isinstance(e, HTTPException) and e.status_code == 404:
+            raise e
+
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occured {str(e)}")
+    finally:
+        if conn:
+            release_db_connection(conn)
+
 
 # ==== Addresses ====
 @router.get("/{customer_id}/addresses", response_model=List[schemas.Addresses], summary="Getting an address for a specific customer")
