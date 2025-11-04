@@ -86,6 +86,18 @@ class AddressesBase(BaseModel):
 class AddressesCreate(AddressesBase):
     pass
 
+class AddressesUpdate(AddressesBase):
+    address_line1: Optional[str] = None
+    region: Optional[str] = None
+    state_province: Optional[str] = None
+    city: Optional[str] = None
+    district: Optional[str] = None
+    sub_district: Optional[str] = None
+    address: Optional[str] = None
+    zip_code: Optional[int] = None
+    is_default: Optional[bool] = False
+
+
 class Addresses(AddressesBase):
     id: int
     customer_id: int

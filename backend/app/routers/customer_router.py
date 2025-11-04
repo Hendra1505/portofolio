@@ -267,3 +267,49 @@ def create_customer_address(customer_id: int, address: schemas.AddressesCreate):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred: {str(e)}")
     finally:
         release_db_connection(conn)
+
+@router.patch("/{customer_id}/addresses", response_model=schemas.Addresses, status_code=status.HTTP_200_OK, summary="Edit partial Addresses Data")
+def partialy_update_record_customer_addresses(customer_id: int, customer_address_data: schemas.AddressesUpdate):
+    conn = get_db_connection()
+    
+    try:
+        cursor = conn.cursor(cursor_factory=DictCursor)
+
+        update_data = customer_address_data.model_dump(exclude_unset=True)
+
+        if not update_data:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="There is No Provided for Update.")
+        
+        set_clause = ", ".join([f"{key} = %s" for key in update_data.keys()])
+
+        values = list(update_data.values())
+
+        values.append(customer_id)
+
+        query_update = f"""
+        UPDATE addresses
+        SET {set_clause}
+        WHERE id = %s
+        RETURNING *;
+        """
+
+        cursor.execute(query_update, tuple(values))
+        updated_customer_addresses = cursor.fetchone()
+
+        if not updated_customer_addresses:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Customer Addresses with id: {customer_id} not found.")
+
+        conn.commit()
+        cursor.close()
+
+        return dict(updated_customer_addresses)
+
+    except Exception as e:
+        conn.rollback()
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                            detail=f"An unexpected error occurred: {str(e)}")
+    finally:
+        if conn:
+            release_db_connection(conn)
