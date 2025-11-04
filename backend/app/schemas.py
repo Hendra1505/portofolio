@@ -51,6 +51,17 @@ class CustomerCreate(CustomerBase):
     # Tipe Data: SecretStr. Ini adalah tipe khusus dari Pydantic yang akan menyembunyikan 
     # nilai password di log atau pesan error, mencegah kebocoran yang tidak disengaja.
 
+class CustomerUpdate(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    username: Optional[str] = None
+    phone_number: Optional[str] = None
+    email: Optional[EmailStr] = None
+    gender: Optional[str] = None
+    profile_picture: Optional[HttpUrl] = None
+    religion: Optional[str] = None
+
+
 class Customer(CustomerBase):
     id: int
     created_at: datetime
