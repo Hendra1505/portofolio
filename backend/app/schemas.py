@@ -141,11 +141,12 @@ class Categories(CategoriesBase):
 
 # === Start cart items ===
 class CartItemBase(BaseModel):
-    quantity: int
-
+    product_id: int
+    quantity: int = 1
+class CartItemCreate(CartItemBase):
+    pass
 class CartItem(CartItemBase):
     id: int
-    product_id: int
     customer_id: int
     created_at: datetime
     
