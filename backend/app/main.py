@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from .routers import product_router, customer_router, brand_router, categories_router, cart_items_router
 
+
 app = FastAPI(
     title="Rest API untuk E-commerce UMKM",
     description="API untuk mengelola produk, pesanan, dan customer",

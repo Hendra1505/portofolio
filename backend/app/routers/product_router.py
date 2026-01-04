@@ -40,7 +40,7 @@ def get_all_product():
         #     })
 
         cursor.close()
-        return products
+        return [dict(product) for product in products]
     finally:
         release_db_connection(conn)
 

@@ -118,10 +118,10 @@ def partially_update_record_customer(customer_id: int, customer_data: schemas.Cu
         values.append(customer_id) 
 
         query_update = f"""
-        UPDATE customers
-        SET {set_clause}
-        WHERE id = %s
-        RETURNING *;
+            UPDATE customers
+            SET {set_clause}
+            WHERE id = %s
+            RETURNING *;
         """
 
         cursor.execute(query_update, tuple(values))
