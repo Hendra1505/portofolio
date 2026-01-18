@@ -1,3 +1,4 @@
+from . import auth_router
 from . import product_router
 from . import customer_router
 from . import brand_router
