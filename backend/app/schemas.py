@@ -197,3 +197,14 @@ class Payments(PaymentsBase):
 
     class Config:
         from_attributes = True
+
+
+# === Start Authentication (Token) ===
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+# === End Authentication (Token) ===
