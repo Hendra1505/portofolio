@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import product_router, customer_router, brand_router, categories_router, cart_items_router
+from .routers import product_router, customer_router, brand_router, categories_router, cart_items_router, auth_router
 
 
 app = FastAPI(
@@ -8,6 +8,8 @@ app = FastAPI(
     version="0.1.0"
 )
 
+# Register router for authentication
+app.include_router(auth_router.router)
 # Register router product
 app.include_router(product_router.router)
 # Register router customer dan address buat customer ya guys ya
@@ -22,7 +24,3 @@ app.include_router(cart_items_router.router)
 @app.get("/")
 def read_root():
     return {"message": "Welcome to API for UMKM E-Commerce"}
-
-# @app.get("/hello/{name}")
-# async def say_hello(name: str):
-#     return {"message": f"Hello {name}"}
